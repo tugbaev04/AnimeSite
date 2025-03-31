@@ -16,3 +16,5 @@ const modal = () => {
     console.log(e.target.value);
   });
 };
+
+modal();
