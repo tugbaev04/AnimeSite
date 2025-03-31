@@ -1,6 +1,8 @@
-const mainData = () => {
-    const preloader = document.querySelector('.preloder');
-	const renderGanreList = (ganres) => {
+
+
+const categoriesData = () => {
+  const preloader = document.querySelector('.preloder');
+  const renderGanreList = (ganres) => {
 		const dropdownBlock = document.querySelector(
 			'.header__menu .dropdown'
 		);
@@ -13,16 +15,14 @@ const mainData = () => {
 		});
 	};
 	const renderAnimeList = (array, ganres) => {
-		const wrapper = document.querySelector('.product .col-lg-8');
-		wrapper.innerHTML = '';
-
-		console.log(ganres);
+		const wrapper = document.querySelector('.product-page .col-lg-8');
+				
 		ganres.forEach((ganre) => {
 			const productBlock = document.createElement('div');
 			const listBlock = document.createElement('div');
 			listBlock.classList.add('row');
 			productBlock.classList.add('mb-5');
-			const list = array.filter((item) => item.ganre === ganre);
+			const list = array.filter((item) => item.tags.includes(ganre));
 
 			productBlock.insertAdjacentHTML(
 				'beforeend',
@@ -77,9 +77,9 @@ const mainData = () => {
 				elem.style.backgroundImage = `url(${elem.dataset.setbg})`;
 			});
 		});
-        setTimeout(() => {
-            preloader.classList.remove('active');
-        }, 500);
+    setTimeout(() => {
+      preloader.classList.remove('active');
+    }, 500);
 	};
 
 	const renderTopAnime = (array) => {
@@ -107,6 +107,10 @@ const mainData = () => {
 		})
 		.then((data) => {
 			const ganres = new Set();
+      const ganreParams = new URLSearchParams(window.location.search).get('ganre')
+
+      console.log(ganreParams);
+      
 
 			data.anime.forEach((item) => {
 				ganres.add(item.ganre);
@@ -116,9 +120,14 @@ const mainData = () => {
 				data.anime.sort((a, b) => b.views - a.views).slice(0, 5)
 			);
 
-			renderAnimeList(data.anime, ganres);
+      if(ganreParams) {
+        renderAnimeList(data.anime, [ganreParams]);
+      } else {
+        renderAnimeList(data.anime, ganres);
+      }
+
 			renderGanreList(ganres);
 		});
-};
+}
 
-mainData();
+categoriesData()
